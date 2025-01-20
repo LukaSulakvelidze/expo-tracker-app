@@ -7,16 +7,11 @@ import TrackDetailsScreen from "./src/screens/TrackDetailsScreen";
 import TrackCreateScreen from "./src/screens/TrackCreateScreen";
 import AccountScreen from "./src/screens/AccountScreen";
 import { NavigationContainer } from "@react-navigation/native";
-import {
-  Context as AuthContext,
-  Provider as AuthProvider,
-} from "./src/store/authContext";
 import { navigationRef } from "./src/service/navigationRef";
-import { useContext } from "react";
 import InitialRouteScreen from "./src/screens/InitialRouteScreen";
-import { Provider as LocationProvider } from "./src/store/locationContext";
-import { Provider as TrackProvider } from "./src/store/trackContext";
 import { Ionicons } from "@expo/vector-icons";
+import { Provider, useSelector } from "react-redux";
+import store from "./src/store/configureStore";
 
 const Stack = createNativeStackNavigator();
 const BottomStack = createBottomTabNavigator();
@@ -109,22 +104,18 @@ const AppContentStacks = () => {
 };
 
 const Root = () => {
-  const { state } = useContext(AuthContext);
+  const token = useSelector((state) => state.auth.token);
   return (
     <NavigationContainer ref={navigationRef}>
-      {state.token ? <AppContentStacks /> : <AuthenticationStack />}
+      {token ? <AppContentStacks /> : <AuthenticationStack />}
     </NavigationContainer>
   );
 };
 
 export default function App() {
   return (
-    <TrackProvider>
-      <LocationProvider>
-        <AuthProvider>
-          <Root />
-        </AuthProvider>
-      </LocationProvider>
-    </TrackProvider>
+    <Provider store={store}>
+      <Root />
+    </Provider>
   );
 }

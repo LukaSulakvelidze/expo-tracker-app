@@ -1,10 +1,9 @@
-import { useContext } from "react";
 import { StyleSheet, Text } from "react-native";
-import { Context as TrackContext } from "../store/trackContext";
 import MapView, { Polyline } from "react-native-maps";
+import { useSelector } from "react-redux";
 
 export default function TrackDetailsScreen({ route }) {
-  const { state } = useContext(TrackContext);
+  const state = useSelector((item) => item.tracks);
 
   const id = route.params.id;
 
@@ -13,7 +12,7 @@ export default function TrackDetailsScreen({ route }) {
 
   return (
     <>
-      <Text style={styles.text}>{state.name}</Text>
+      <Text style={styles.text}>{state?.name}</Text>
       <MapView
         loadingEnabled
         style={styles.map}

@@ -1,15 +1,17 @@
 import { useIsFocused } from "@react-navigation/native";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { FlatList, TouchableOpacity } from "react-native";
-import { Context as TrackContext } from "../store/trackContext";
 import { ListItem } from "@rneui/base";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTracks } from "../store/track";
 
 export default function TrackListScreen({ navigation }) {
-  const { state, fetchTracks } = useContext(TrackContext);
+  const state = useSelector((item) => item.tracks);
+  const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    fetchTracks();
+    dispatch(fetchTracks());
   }, [isFocused]);
 
   return (

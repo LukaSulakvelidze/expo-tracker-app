@@ -1,10 +1,12 @@
-import { useContext, useEffect } from "react";
-import { Context } from "../store/authContext";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { isUserAuthenticated } from "../store/auth";
 
 export default function InitialRouteScreen() {
-  const { isUserAuthenticated } = useContext(Context);
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    isUserAuthenticated();
-  }, []);
+    dispatch(isUserAuthenticated());
+  }, [dispatch]);
   return;
 }

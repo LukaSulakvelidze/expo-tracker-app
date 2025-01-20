@@ -1,11 +1,11 @@
-import React, { useContext, useRef } from "react";
+import React, { useRef } from "react";
 import MapView, { Circle, Polyline } from "react-native-maps";
-import { Context as LocationContext } from "../../store/locationContext";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { Button } from "@rneui/base";
+import { useSelector } from "react-redux";
 
 export default function Map() {
-  const { state } = useContext(LocationContext);
+  const state = useSelector((item) => item.location);
   const mapRef = useRef(null);
 
   if (!state.currentLocation) {
@@ -15,8 +15,8 @@ export default function Map() {
   const centerMapOnUserLocation = async () => {
     mapRef.current?.animateToRegion(
       {
-        latitude: state.currentLocation.coords.latitude,
-        longitude: state.currentLocation.coords.longitude,
+        latitude: state?.currentLocation.coords.latitude,
+        longitude: state?.currentLocation.coords.longitude,
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
       },
