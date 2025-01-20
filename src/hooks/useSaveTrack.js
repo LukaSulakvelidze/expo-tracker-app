@@ -1,16 +1,21 @@
-import { useContext } from "react";
-import { Context as LocationContext } from "../store/locationContext";
-import { Context as TrackContext } from "../store/trackContext";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { reset } from "../store/location";
+import { createTrack } from "../store/track";
 
 const useSaveTrack = () => {
-  const { createTrack } = useContext(TrackContext);
-  const { state, reset } = useContext(LocationContext);
+  const state = useSelector((item) => item.location);
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+
   const saveTrack = async () => {
-    await createTrack(state.name, state.locations);
-    reset();
-    navigation.navigate("TrackListFlow");
+    try {
+      await dispatch(createTrack(state.name, state.locations));
+      dispatch(reset());
+      navigation.navigate("TrackListFlow");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return [saveTrack];

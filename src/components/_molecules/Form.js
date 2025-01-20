@@ -1,12 +1,14 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, Button, Input } from "@rneui/base";
-import { Context as authContext } from "../../store/authContext";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { clearErrorMessages, signIn, signUp } from "../../store/auth";
 
 export default function Form({ screnTitle, regist }) {
-  const { state, signUp, signIn, clearErrorMessages } = useContext(authContext);
+  const state = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -38,7 +40,9 @@ export default function Form({ screnTitle, regist }) {
       <Button
         title={regist ? "Create new Account" : "Sign In"}
         onPress={() => {
-          regist ? signUp({ email, password }) : signIn({ email, password });
+          regist
+            ? dispatch(signUp({ email, password }))
+            : dispatch(signIn({ email, password }));
         }}
       />
       <TouchableOpacity
@@ -47,7 +51,7 @@ export default function Form({ screnTitle, regist }) {
             regist
               ? navigation.navigate("SignIn")
               : navigation.navigate("SignUp");
-            clearErrorMessages();
+            dispatch(clearErrorMessages());
           }
         }}
       >

@@ -1,12 +1,16 @@
 import { Button, Input } from "@rneui/base";
-import { useContext, useState } from "react";
 import { View } from "react-native";
-import { Context as LocationContext } from "../../store/locationContext";
 import useSaveTrack from "../../hooks/useSaveTrack";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  changeName,
+  startRecording,
+  stopRecording,
+} from "../../store/location";
 
 export default function TrackForm() {
-  const { state, startRecording, stopRecording, changeName } =
-    useContext(LocationContext);
+  const state = useSelector((item) => item.location);
+  const dispatch = useDispatch();
 
   const [saveTrack] = useSaveTrack();
   return (
@@ -14,12 +18,15 @@ export default function TrackForm() {
       <Input
         placeholder="Track title"
         value={state.name}
-        onChangeText={changeName}
+        onChangeText={(e) => dispatch(changeName(e))}
       />
       {state.isRecording ? (
-        <Button title="Stop" onPress={stopRecording} />
+        <Button title="Stop" onPress={() => dispatch(stopRecording())} />
       ) : (
-        <Button title="Start Recording" onPress={startRecording} />
+        <Button
+          title="Start Recording"
+          onPress={() => dispatch(startRecording())}
+        />
       )}
 
       {!state.isRecording && state.locations.length > 0 && (
