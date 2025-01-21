@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
-import authReducer from "./auth";
 import locationReducer from "./location";
 import trackReducer from "./track";
+import authReducer from "./auth";
 
 export default combineReducers({
   auth: authReducer,

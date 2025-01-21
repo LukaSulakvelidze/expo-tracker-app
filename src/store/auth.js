@@ -1,24 +1,39 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { navigationRef } from "../service/navigationRef";
 import { axiosInstance } from "../lib/axiosInstance";
+import { createSlice } from "@reduxjs/toolkit";
 
-// action types
-const SIGNIN = "signIn";
-const SIGNOUT = "signOut";
-const ADD_ERROR = "add_error";
-const CLEAR_ERROR = "clear_error";
+const slice = createSlice({
+  name: "auth",
+  initialState: {
+    token: null,
+    errorMessage: "",
+  },
+  reducers: {
+    setToken: (state, action) => {
+      state.token = action.payload;
+    },
+    setError: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    clearErrorMessages: (state) => {
+      state.errorMessage = "";
+    },
+    signOut: (state) => {
+      state.token = null;
+    },
+  },
+});
 
-const initialState = {
-  token: null,
-  errorMessage: "",
-};
+export const { setToken, setError, clearErrorMessages, signOut } =
+  slice.actions;
+export default slice.reducer;
 
-// action creators
 export const isUserAuthenticated = () => async (dispatch) => {
   try {
     const token = await AsyncStorage.getItem("token");
     if (token) {
-      dispatch({ type: SIGNIN, payload: token });
+      dispatch(setToken(token));
     } else {
       if (navigationRef.isReady()) {
         navigationRef.navigate("SignIn");
@@ -38,9 +53,10 @@ export const signUp =
         password,
       });
       await AsyncStorage.setItem("token", response.data.accesstoken);
-      dispatch({ type: SIGNIN, payload: response.data.accesstoken });
+      dispatch(setToken(response.data.accesstoken));
     } catch (error) {
-      dispatch({ type: ADD_ERROR, payload: "Something Went Wrong" });
+      dispatch(setError("Something Went Wrong"));
+      console.error("Sign-up error:", error);
     }
   };
 
@@ -53,33 +69,9 @@ export const signIn =
         password,
       });
       await AsyncStorage.setItem("token", response.data.accesstoken);
-      dispatch({ type: SIGNIN, payload: response.data.accesstoken });
+      dispatch(setToken(response.data.accesstoken));
     } catch (error) {
-      dispatch({ type: ADD_ERROR, payload: "Something Went Wrong" });
+      dispatch(setError("Something Went Wrong"));
+      console.error("Sign-in error:", error);
     }
   };
-
-export const signOut = () => async (dispatch) => {
-  await AsyncStorage.removeItem("token");
-  dispatch({ type: SIGNOUT });
-};
-
-export const clearErrorMessages = () => (dispatch) => {
-  dispatch({ type: CLEAR_ERROR });
-};
-
-// reducer
-export default function authReducer(state = initialState, action) {
-  switch (action.type) {
-    case SIGNIN:
-      return { errorMessage: "", token: action.payload };
-    case SIGNOUT:
-      return { errorMessage: "", token: null };
-    case ADD_ERROR:
-      return { ...state, errorMessage: action.payload };
-    case CLEAR_ERROR:
-      return { ...state, errorMessage: "" };
-    default:
-      return state;
-  }
-}
