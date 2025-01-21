@@ -36,6 +36,7 @@ export default function Map() {
         }}
         showsUserLocation
         loadingEnabled
+        followsUserLocation
       >
         <Circle
           center={{
