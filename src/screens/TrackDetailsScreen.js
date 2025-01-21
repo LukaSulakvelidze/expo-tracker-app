@@ -7,7 +7,7 @@ export default function TrackDetailsScreen({ route }) {
 
   const id = route.params.id;
 
-  const track = state.find((track) => track._id === id);
+  const track = state.tracks.find((track) => track._id === id);
   const coords = track.locations[0].coords;
 
   return (

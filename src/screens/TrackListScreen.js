@@ -1,6 +1,6 @@
 import { useIsFocused } from "@react-navigation/native";
 import { useEffect } from "react";
-import { FlatList, TouchableOpacity } from "react-native";
+import { ActivityIndicator, FlatList, TouchableOpacity } from "react-native";
 import { ListItem } from "@rneui/base";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTracks } from "../store/track";
@@ -14,9 +14,13 @@ export default function TrackListScreen({ navigation }) {
     dispatch(fetchTracks());
   }, [isFocused]);
 
+  if (state.loaderStatus) {
+    return <ActivityIndicator size={"large"} style={{ marginTop: 250 }} />;
+  }
+
   return (
     <FlatList
-      data={state}
+      data={state.tracks}
       keyExtractor={(item) => item._id}
       renderItem={({ item }) => {
         return (
