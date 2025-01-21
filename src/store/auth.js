@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { navigationRef } from "../service/navigationRef";
 import { axiosInstance } from "../lib/axiosInstance";
 import { createSlice } from "@reduxjs/toolkit";
@@ -29,9 +28,9 @@ export const { setToken, setError, clearErrorMessages, signOut } =
   slice.actions;
 export default slice.reducer;
 
-export const isUserAuthenticated = () => async (dispatch) => {
+export const isUserAuthenticated = (state) => async (dispatch) => {
   try {
-    const token = await AsyncStorage.getItem("token");
+    const token = state.token;
     if (token) {
       dispatch(setToken(token));
     } else {
@@ -52,7 +51,6 @@ export const signUp =
         email,
         password,
       });
-      await AsyncStorage.setItem("token", response.data.accesstoken);
       dispatch(setToken(response.data.accesstoken));
     } catch (error) {
       dispatch(setError("Something Went Wrong"));
@@ -68,7 +66,6 @@ export const signIn =
         email,
         password,
       });
-      await AsyncStorage.setItem("token", response.data.accesstoken);
       dispatch(setToken(response.data.accesstoken));
     } catch (error) {
       dispatch(setError("Something Went Wrong"));
