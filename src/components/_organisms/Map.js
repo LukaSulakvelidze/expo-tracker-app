@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import MapView, { Circle, Polyline } from "react-native-maps";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 import { Button } from "@rneui/base";
 import { useSelector } from "react-redux";
 

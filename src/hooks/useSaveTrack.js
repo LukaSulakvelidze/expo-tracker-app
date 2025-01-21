@@ -9,13 +9,9 @@ const useSaveTrack = () => {
   const navigation = useNavigation();
 
   const saveTrack = async () => {
-    try {
-      await dispatch(createTrack(state.name, state.locations));
-      dispatch(reset());
-      navigation.navigate("TrackListFlow");
-    } catch (error) {
-      console.error(error);
-    }
+    await dispatch(createTrack(state.name, state.locations));
+    dispatch(reset());
+    navigation.navigate("TrackListFlow");
   };
 
   return [saveTrack];
