@@ -11,7 +11,11 @@ import { navigationRef } from "./src/service/navigationRef";
 import InitialRouteScreen from "./src/screens/InitialRouteScreen";
 import { Ionicons } from "@expo/vector-icons";
 import { Provider, useSelector } from "react-redux";
-import store from "./src/store/configureStore";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor, store } from "./src/store/configureStore";
+import { ActivityIndicator } from "react-native";
+import { injectStore } from "./src/lib/axiosInstance";
+injectStore(store);
 
 const Stack = createNativeStackNavigator();
 const BottomStack = createBottomTabNavigator();
@@ -104,7 +108,8 @@ const AppContentStacks = () => {
 };
 
 const Root = () => {
-  const token = useSelector((state) => state.auth.token);
+  const token = useSelector((item) => item.auth.token);
+  console.log(token, "root Token");
   return (
     <NavigationContainer ref={navigationRef}>
       {token ? <AppContentStacks /> : <AuthenticationStack />}
@@ -115,7 +120,14 @@ const Root = () => {
 export default function App() {
   return (
     <Provider store={store}>
-      <Root />
+      <PersistGate
+        loading={
+          <ActivityIndicator size={"large"} style={{ marginTop: 250 }} />
+        }
+        persistor={persistor}
+      >
+        <Root />
+      </PersistGate>
     </Provider>
   );
 }

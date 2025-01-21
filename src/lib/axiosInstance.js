@@ -1,5 +1,10 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+
+let store;
+
+export const injectStore = (_store) => {
+  store = _store;
+};
 
 const axiosInstance = axios.create({
   baseURL: "https://tracker-nestjs.onrender.com",
@@ -7,7 +12,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const token = await AsyncStorage.getItem("token");
+    const token = store.getState().auth.token;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

@@ -1,15 +1,31 @@
-import { compose, applyMiddleware } from "redux";
 import reducer from "./reducer";
-import devtoolsEnhancer from "redux-devtools-expo-dev-plugin";
-import { thunk } from "redux-thunk";
 import { configureStore } from "@reduxjs/toolkit";
+import persistReducer from "redux-persist/es/persistReducer";
+import persistStore from "redux-persist/es/persistStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from "redux-persist";
 
-const composedEnhancers = compose(devtoolsEnhancer({ trace: true }));
+const persistConfig = {
+  key: "root",
+  storage: AsyncStorage,
+  // whitelist: ["token"],
+};
+const persistedReducer = persistReducer(persistConfig, reducer);
 
-const store = configureStore({
-  reducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
-  composedEnhancers,
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
-
-export default store;
+export const persistor = persistStore(store);
