@@ -109,7 +109,6 @@ const AppContentStacks = () => {
 
 const Root = () => {
   const token = useSelector((item) => item.auth.token);
-  console.log(token, "root Token");
   return (
     <NavigationContainer ref={navigationRef}>
       {token ? <AppContentStacks /> : <AuthenticationStack />}

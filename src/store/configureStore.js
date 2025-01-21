@@ -4,6 +4,7 @@ import persistReducer from "redux-persist/es/persistReducer";
 import persistStore from "redux-persist/es/persistStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  createTransform,
   FLUSH,
   PAUSE,
   PERSIST,
@@ -12,10 +13,23 @@ import {
   REHYDRATE,
 } from "redux-persist";
 
+const setTransform = createTransform(
+  // An "inbound" function that gets called right before state is persisted (optional).
+  (inboundState, key) => {
+    return { token: inboundState.token, errorMessage: "" };
+  },
+  // An "outbound" function that gets called right before state is rehydrated (optional).
+  (outboundState, key) => {
+    return outboundState;
+  },
+  // define which reducers this transform gets called for.
+  { whitelist: ["auth"] }
+);
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  // whitelist: ["token"],
+  whitelist: ["auth"],
+  transforms: [setTransform],
 };
 const persistedReducer = persistReducer(persistConfig, reducer);
 
